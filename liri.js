@@ -43,11 +43,24 @@ function choose(command, name){
       break;
 
     case "my-tweets":
-      tweeterkeys.get('favorites/list', function(error, tweets, response) {
-        if(error) throw error;
-        console.log(tweets);  // The favorites.
-        console.log(response);  // Raw response object.
+      var Twit = new Twitter(tweeterkeys);
+      var params = {
+        q: 'sh_liri',
+        count: 2
+      };
+      Twit.get('search/tweets', params, function(error, tweets, response) {
+        if (!error) {
+          // console.log(JSON.parse(response.body));
+
+          var result = response.body;
+          var msg = result['statuses'][0].text.split('.')[0];
+          console.log(msg);
+        }else{
+          console.log(error);
+        }
       });
 
   }
 }
+
+choose(command,name);
