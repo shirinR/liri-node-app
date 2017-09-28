@@ -2,7 +2,7 @@ var tweeterkeys = require('./tweeterkeys.js');
 var spotifykeys = require('./spotifykeys.js');
 
 var Twitter = require('twitter');
-var spotify = require('spotify');
+var Spotify = require('node-spotify-api');
 var request = require('request');
 var fs = require('fs');
 
@@ -25,12 +25,23 @@ function choose(command, name){
       break;
 
     case "spotify-this-song":
-      spotifykeys.search({ type: 'artist OR album OR track', query: name }, function(err, data) {
+      // var spotify = new Spotify(spotifykeys);
+      var spotify = new Spotify({
+        id: 'e32a2682bd494d8880b914ca4a9a4191',
+        secret: 'd2340a452a3f409f9c9ce0361918a125'
+      });
+
+      spotify.search({ type: 'track', query: name }, function(err, data) {
         if ( err ) {
             console.log('Error occurred: ' + err);
             return;
         }
-      console.log(data); // TODO: { error: { status: 401, message: 'No token provided' } }
+        var artist = data.tracks.items[0].album.artists[0].name;
+        console.log(artist);
+        console.log('Album: ', data.tracks.items[0].album);
+        console.log('A preview link of the song from Spotify: ',data.tracks.items[0].album.href);
+        console.log('Artist name: ', data.tracks.items[0].album.artists[0].name);
+        console.log('Song name: ' + name);
     });
       break;
 
@@ -45,16 +56,16 @@ function choose(command, name){
     case "my-tweets":
       var Twit = new Twitter(tweeterkeys);
       var params = {
-        q: 'sh_liri',
+        screen_name: 'sh_Liri',
         count: 2
       };
-      Twit.get('search/tweets', params, function(error, tweets, response) {
+      Twit.get('statuses/user_timeline', params, function(error, tweets, response) {
         if (!error) {
-          // console.log(JSON.parse(response.body));
-
-          var result = response.body;
-          var msg = result['statuses'][0].text.split('.')[0];
-          console.log(msg);
+          var result = JSON.parse(response.body);
+          for(var i=0;i<2; i++){
+            console.log(i+'_tweet craeted at: ' + result[i].created_at);
+              console.log(i+'_tweet text: ' + result[i].text.split('.')[0]);
+          }
         }else{
           console.log(error);
         }
