@@ -34,4 +34,4 @@ Make a new GitHub repository called liri-node-app and clone it to your computer.
 
    ## Copyright
 
-Coding Boot Camp (C) 2016. All Rights Reserved.
+   Shirin Rad © 2017. All Rights Reserved.
